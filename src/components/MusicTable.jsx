@@ -24,8 +24,7 @@ function AvailDot({ avail, total }) {
 
 const COLS = [
   { key:'title',            label:'Title',         w:'22%' },
-  { key:'composer',         label:'Composer',      w:'13%' },
-  { key:'arranger',         label:'Composer or Arranger', w:'13%' },
+  { key:'arranger',         label:'Composer or Arranger', w:'22%' },
   { key:'voicing',          label:'Voicing',       w:'9%'  },
   { key:'accompaniment',    label:'Accompaniment', w:'12%' },
   { key:'category',         label:'Category',      w:'13%' },
