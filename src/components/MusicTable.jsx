@@ -2,11 +2,17 @@ import { useState } from 'react'
 import { VOICING_COLORS } from '../lib/constants.js'
 
 function VoicingBadge({ v }) {
-  const s = VOICING_COLORS[v] || { bg:'#F3F4F6', color:'#374151' }
+  // Try exact match first, then partial match for variants like 'SATB + Solo'
+  const s = VOICING_COLORS[v] || 
+    Object.entries(VOICING_COLORS).find(([k]) => v && v.toUpperCase().startsWith(k))?.[1] ||
+    { bg:'#F3F4F6', color:'#374151' }
   return <span className="tag" style={{ background:s.bg, color:s.color }}>{v || '—'}</span>
 }
 
 function AvailDot({ avail, total }) {
+  if (total === null || total === undefined) {
+    return <span style={{ color:'var(--ink-lt)', fontSize:13 }}>—</span>
+  }
   const color = avail === 0 ? 'var(--red)' : avail <= Math.ceil(total * 0.25) ? 'var(--amber)' : 'var(--teal)'
   return (
     <span style={{ display:'flex', alignItems:'center', gap:5, fontSize:13 }}>
@@ -19,7 +25,7 @@ function AvailDot({ avail, total }) {
 const COLS = [
   { key:'title',            label:'Title',         w:'22%' },
   { key:'composer',         label:'Composer',      w:'13%' },
-  { key:'arranger',         label:'Arranger',      w:'13%' },
+  { key:'arranger',         label:'Composer or Arranger', w:'13%' },
   { key:'voicing',          label:'Voicing',       w:'9%'  },
   { key:'accompaniment',    label:'Accompaniment', w:'12%' },
   { key:'category',         label:'Category',      w:'13%' },

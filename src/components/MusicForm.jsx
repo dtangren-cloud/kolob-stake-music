@@ -18,7 +18,7 @@ export default function MusicForm({ initial, onSave, onCancel, saving }) {
     onSave({
       ...form,
       publication_year: form.publication_year ? parseInt(form.publication_year) : null,
-      total_copies: form.total_copies ? parseInt(form.total_copies) : 0,
+      total_copies: form.total_copies !== '' && form.total_copies !== null ? parseInt(form.total_copies) : null,
     })
   }
 
@@ -35,7 +35,7 @@ export default function MusicForm({ initial, onSave, onCancel, saving }) {
         <Field label="Title *">
           <input className="input" value={form.title} onChange={e=>set('title',e.target.value)} required />
         </Field>
-        <Field label="Total copies">
+        <Field label="Total copies (optional)">
           <input className="input" type="number" min="0" value={form.total_copies} onChange={e=>set('total_copies',e.target.value)} />
         </Field>
       </div>

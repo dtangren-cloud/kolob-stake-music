@@ -75,8 +75,12 @@ export default function Browse() {
     const avail = catPieces.filter(p => (p.available_copies ?? p.total_copies) > 0).length
     const isOpen = expandedGroup === cat
     const icons = {
-      "Hymns & Children's Songs":'♩', 'Easter':'✝', 'Christmas':'❄',
-      'Thanksgiving':'✦', 'Other Sacred Music':'♪',
+      "Hymns & Children's Song Arrangements":'♩',
+      'Easter':'✝',
+      'Christmas':'❄',
+      'Thanksgiving':'✦',
+      'Other Sacred Music':'♪',
+      'Books & Collections':'📚',
     }
     return (
       <div className="card" style={{ overflow:'hidden' }}>
@@ -110,10 +114,12 @@ export default function Browse() {
   }
 
   const VoicingCard = ({ group }) => {
-    const grpPieces = filtered.filter(p => group.values.includes(p.voicing))
+    const grpPieces = group.label === 'Other'
+      ? filtered.filter(p => p.voicing && !VOICING_GROUPS.slice(0,-1).some(g => g.test(p.voicing)))
+      : filtered.filter(p => p.voicing && group.test(p.voicing))
     const avail = grpPieces.filter(p => (p.available_copies ?? p.total_copies) > 0).length
     const isOpen = expandedGroup === group.label
-    const sampleColor = VOICING_COLORS[group.values[0]] || { bg:'#F3F4F6', color:'#374151' }
+    const sampleColor = VOICING_COLORS[group.description?.split(',')[0].trim()] || { bg:'#EDE9FE', color:'#5B21B6' }
     return (
       <div className="card" style={{ overflow:'hidden' }}>
         <div
@@ -130,7 +136,7 @@ export default function Browse() {
             <div>
               <div style={{ fontFamily:'Lora,serif', fontSize:16 }}>{group.label}</div>
               <div style={{ fontSize:12, color:'var(--ink-md)', marginTop:2 }}>
-                {group.values.join(', ')} · {grpPieces.length} pieces · {avail} available
+                {group.description} · {grpPieces.length} pieces · {avail} available
               </div>
             </div>
           </div>

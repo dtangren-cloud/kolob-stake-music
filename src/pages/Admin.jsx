@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Papa from 'papaparse'
 import { supabase } from '../lib/supabase.js'
-import { VOICINGS, CATEGORIES, ACCOMPANIMENTS } from '../lib/constants.js'
+import { VOICINGS, CATEGORIES, ACCOMPANIMENTS, CATEGORY_ALIASES } from '../lib/constants.js'
 import MusicTable from '../components/MusicTable.jsx'
 import MusicForm from '../components/MusicForm.jsx'
 
@@ -26,18 +26,42 @@ export default function Admin() {
 
   async function fetchAll() {
     setLoading(true)
-    const [{ data: music }, { data: cos }] = await Promise.all([
-      supabase.from('music_with_availability').select('*').order('title'),
+    const [{ data: music }, { data: cos }, { data: activecos }] = await Promise.all([
+      supabase.from('music').select('*').order('title'),
       supabase.from('checkouts').select('*, music(title)').is('returned_at', null).order('checked_out_at', { ascending: false }),
+      supabase.from('checkouts').select('music_id, copies_taken').is('returned_at', null),
     ])
-    setPieces(music || [])
+    // Manually compute available_copies so admin table still shows it
+    const cosMap = {}
+    for (const c of (activecos || [])) {
+      cosMap[c.music_id] = (cosMap[c.music_id] || 0) + c.copies_taken
+    }
+    const musicWithAvail = (music || []).map(m => ({
+      ...m,
+      copies_out: cosMap[m.id] || 0,
+      available_copies: m.total_copies != null ? m.total_copies - (cosMap[m.id] || 0) : null,
+    }))
+    setPieces(musicWithAvail)
     setCheckouts(cos || [])
     setLoading(false)
   }
 
   async function handleSaveNew(data) {
     setSaving(true)
-    const { error } = await supabase.from('music').insert(data)
+    const saveData = {
+      title:            data.title,
+      composer:         data.composer,
+      arranger:         data.arranger,
+      voicing:          data.voicing,
+      accompaniment:    data.accompaniment,
+      category:         data.category,
+      publisher:        data.publisher,
+      publication_year: data.publication_year,
+      total_copies:     data.total_copies,
+      topic:            data.topic,
+      notes:            data.notes,
+    }
+    const { error } = await supabase.from('music').insert(saveData)
     setSaving(false)
     if (error) { alert('Error: ' + error.message); return }
     await fetchAll()
@@ -46,7 +70,21 @@ export default function Admin() {
 
   async function handleSaveEdit(data) {
     setSaving(true)
-    const { error } = await supabase.from('music').update(data).eq('id', editPiece.id)
+    // Explicitly pick only real music table columns — never pass view-computed fields
+    const saveData = {
+      title:            data.title,
+      composer:         data.composer,
+      arranger:         data.arranger,
+      voicing:          data.voicing,
+      accompaniment:    data.accompaniment,
+      category:         data.category,
+      publisher:        data.publisher,
+      publication_year: data.publication_year,
+      total_copies:     data.total_copies,
+      topic:            data.topic,
+      notes:            data.notes,
+    }
+    const { error } = await supabase.from('music').update(saveData).eq('id', editPiece.id)
     setSaving(false)
     if (error) { alert('Error: ' + error.message); return }
     await fetchAll()
@@ -93,24 +131,25 @@ export default function Admin() {
     })
   }
 
-function mapRow(r) {
-  const combined = r.composerarranger || r.composer_arranger || ''
-  const composer = r.composer || ''
-  const arranger = r.arranger || combined
+  function mapRow(r) {
+    // "Composer/Arranger" normalises to "composerarranger" after stripping non-alphanumeric chars
+    const combined = r.composerarranger || r.composer_arranger || ''
+    const composer = r.composer || ''
+    const arranger = r.arranger || combined
 
-  return {
-    title:            r.title || r.piece_title || r.name || '',
-    composer:         composer,
-    arranger:         arranger,
-    voicing:          r.voicing || r.voice_type || r.voice || '',
-    accompaniment:    r.accompaniment || r.accomp || r.piano || '',
-    category:         r.category || r.topic || r.type || '',
-    publisher:        r.publisher || r.pub || '',
-    publication_year: r.publication_year || r.year || r.pub_year ? parseInt(r.publication_year || r.year || r.pub_year) || null : null,
-    total_copies:     r.total_copies || r.copies || r.quantity ? parseInt(r.total_copies || r.copies || r.quantity) || 0 : 0,
-    notes:            r.notes || r.topic || '',
+    return {
+      title:            r.title || r.piece_title || r.name || '',
+      composer:         composer,
+      arranger:         arranger,
+      voicing:          r.voicing || r.voice_type || r.voice || '',
+      accompaniment:    r.accompaniment || r.accomp || r.piano || '',
+      category:         (()=>{ const raw = (r.category || r.topic || r.type || '').trim(); return CATEGORY_ALIASES[raw.toLowerCase()] || raw; })(),
+      publisher:        r.publisher || r.pub || '',
+      publication_year: r.publication_year || r.year || r.pub_year ? parseInt(r.publication_year || r.year || r.pub_year) || null : null,
+      total_copies:     r.total_copies || r.copies || r.quantity ? parseInt(r.total_copies || r.copies || r.quantity) || 0 : 0,
+      notes:            r.notes || r.topic || '',
+    }
   }
-}
 
   async function handleImport() {
     if (!csvRows.length) return
