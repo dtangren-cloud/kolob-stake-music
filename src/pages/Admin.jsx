@@ -93,21 +93,24 @@ export default function Admin() {
     })
   }
 
-  function mapRow(r) {
-    // Accept various possible column name formats from Google Sheets
-    return {
-      title:            r.title || r.piece_title || r.name || '',
-      composer:         r.composer || r.composer_arranger || '',
-      arranger:         r.arranger || '',
-      voicing:          r.voicing || r.voice_type || r.voice || '',
-      accompaniment:    r.accompaniment || r.accomp || r.piano || '',
-      category:         r.category || r.topic || r.type || '',
-      publisher:        r.publisher || r.pub || '',
-      publication_year: r.publication_year || r.year || r.pub_year ? parseInt(r.publication_year || r.year || r.pub_year) || null : null,
-      total_copies:     r.total_copies || r.copies || r.quantity ? parseInt(r.total_copies || r.copies || r.quantity) || 0 : 0,
-      notes:            r.notes || r.topic || '',
-    }
+function mapRow(r) {
+  const combined = r.composerarranger || r.composer_arranger || ''
+  const composer = r.composer || ''
+  const arranger = r.arranger || combined
+
+  return {
+    title:            r.title || r.piece_title || r.name || '',
+    composer:         composer,
+    arranger:         arranger,
+    voicing:          r.voicing || r.voice_type || r.voice || '',
+    accompaniment:    r.accompaniment || r.accomp || r.piano || '',
+    category:         r.category || r.topic || r.type || '',
+    publisher:        r.publisher || r.pub || '',
+    publication_year: r.publication_year || r.year || r.pub_year ? parseInt(r.publication_year || r.year || r.pub_year) || null : null,
+    total_copies:     r.total_copies || r.copies || r.quantity ? parseInt(r.total_copies || r.copies || r.quantity) || 0 : 0,
+    notes:            r.notes || r.topic || '',
   }
+}
 
   async function handleImport() {
     if (!csvRows.length) return

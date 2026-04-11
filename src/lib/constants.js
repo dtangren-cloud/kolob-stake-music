@@ -6,7 +6,7 @@ export const VOICINGS = [
 ]
 
 export const CATEGORIES = [
-  "Hymns & Children's Songs",
+  "Hymns & Children's Song Arrangements",
   'Easter',
   'Christmas',
   'Thanksgiving',
