@@ -145,7 +145,7 @@ export default function Admin() {
       accompaniment:    r.accompaniment || r.accomp || r.piano || '',
       category:         (()=>{ const raw = (r.category || r.topic || r.type || '').trim(); return CATEGORY_ALIASES[raw.toLowerCase()] || raw; })(),
       publisher:        r.publisher || r.pub || '',
-      publication_year: r.publication_year || r.year || r.pub_year ? parseInt(r.publication_year || r.year || r.pub_year) || null : null,
+      publication_year: r.publication_year || r.year || r.pub_year || r.publ_year || r.publyear ? parseInt(r.publication_year || r.year || r.pub_year || r.publ_year || r.publyear) || null : null,
       total_copies:     r.total_copies || r.copies || r.quantity ? parseInt(r.total_copies || r.copies || r.quantity) || 0 : 0,
       notes:            r.notes || r.topic || '',
     }
@@ -235,7 +235,7 @@ export default function Admin() {
                     <table style={{ width:'100%', borderCollapse:'collapse', fontSize:13 }}>
                       <thead>
                         <tr>
-                          {['Title','Composer','Arranger','Voicing','Category','Accompaniment','Year','Copies','Available',''].map(h => (
+                          {['Title','Composer or Arranger','Voicing','Category','Accompaniment','Year','Copies','Available',''].map(h => (
                             <th key={h} style={{ padding:'9px 12px', textAlign:'left', fontSize:11, fontWeight:500,
                               color:'var(--ink-md)', textTransform:'uppercase', letterSpacing:'.06em',
                               borderBottom:'1px solid var(--bd)', background:'var(--cream)', whiteSpace:'nowrap' }}>
@@ -252,8 +252,7 @@ export default function Admin() {
                             onMouseLeave={e => e.currentTarget.style.background=i%2===0?'#fff':'var(--cream)'}
                           >
                             <td style={{ padding:'9px 12px', fontWeight:500 }}>{p.title}</td>
-                            <td style={{ padding:'9px 12px', color:'var(--ink-md)' }}>{p.composer||'—'}</td>
-                            <td style={{ padding:'9px 12px', color:'var(--ink-md)' }}>{p.arranger||'—'}</td>
+                            <td style={{ padding:'9px 12px', color:'var(--ink-md)' }}>{p.arranger || p.composer || '—'}</td>
                             <td style={{ padding:'9px 12px', color:'var(--ink-md)' }}>{p.voicing||'—'}</td>
                             <td style={{ padding:'9px 12px', color:'var(--ink-md)' }}>{p.category||'—'}</td>
                             <td style={{ padding:'9px 12px', color:'var(--ink-md)' }}>{p.accompaniment||'—'}</td>

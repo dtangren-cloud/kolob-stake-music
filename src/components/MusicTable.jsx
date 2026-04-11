@@ -85,8 +85,7 @@ export default function MusicTable({ pieces=[], actionLabel, onAction, isActionD
                 onMouseLeave={e => e.currentTarget.style.background=i%2===0?'#fff':'var(--cream)'}
               >
                 <td style={{ padding:'10px 12px', fontWeight:500 }}>{p.title}</td>
-                <td style={{ padding:'10px 12px', color:'var(--ink-md)' }}>{p.composer||'—'}</td>
-                <td style={{ padding:'10px 12px', color:'var(--ink-md)' }}>{p.arranger||'—'}</td>
+                <td style={{ padding:'10px 12px', color:'var(--ink-md)' }}>{p.arranger || p.composer || '—'}</td>
                 <td style={{ padding:'10px 12px' }}><VoicingBadge v={p.voicing} /></td>
                 <td style={{ padding:'10px 12px', color:'var(--ink-md)' }}>{p.accompaniment||'—'}</td>
                 <td style={{ padding:'10px 12px', color:'var(--ink-md)' }}>{p.category||'—'}</td>
