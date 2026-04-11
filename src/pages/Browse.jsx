@@ -113,13 +113,34 @@ export default function Browse() {
     )
   }
 
+  const VOICING_LABEL_ABBR = {
+    'SATB & Mixed': 'SATB',
+    'Treble Voices (SSA)': 'SSA',
+    'SA & Flexible': 'SA',
+    "Men's Voices": 'TTBB',
+    '2-Part': '2pt',
+    'Unison': 'Uni',
+    'Other': '?',
+  }
+
+  const VOICING_LABEL_COLOR = {
+    'SATB & Mixed':       { bg:'#DBEAFE', color:'#1E40AF' },
+    'Treble Voices (SSA)':{ bg:'#EDE9FE', color:'#5B21B6' },
+    'SA & Flexible':      { bg:'#D1FAE5', color:'#065F46' },
+    "Men's Voices":       { bg:'#FEF3C7', color:'#92400E' },
+    '2-Part':             { bg:'#FCE7F3', color:'#9D174D' },
+    'Unison':             { bg:'#ECFDF5', color:'#065F46' },
+    'Other':              { bg:'#F3F4F6', color:'#374151' },
+  }
+
   const VoicingCard = ({ group }) => {
     const grpPieces = group.label === 'Other'
       ? filtered.filter(p => p.voicing && !VOICING_GROUPS.slice(0,-1).some(g => g.test(p.voicing)))
       : filtered.filter(p => p.voicing && group.test(p.voicing))
     const avail = grpPieces.filter(p => (p.available_copies ?? p.total_copies) > 0).length
     const isOpen = expandedGroup === group.label
-    const sampleColor = VOICING_COLORS[group.description?.split(',')[0].trim()] || { bg:'#EDE9FE', color:'#5B21B6' }
+    const sampleColor = VOICING_LABEL_COLOR[group.label] || { bg:'#EDE9FE', color:'#5B21B6' }
+    const abbr = VOICING_LABEL_ABBR[group.label] || '?'
     return (
       <div className="card" style={{ overflow:'hidden' }}>
         <div
@@ -131,7 +152,7 @@ export default function Browse() {
             <div style={{ width:38, height:38, borderRadius:'var(--r)',
               background:sampleColor.bg, display:'flex', alignItems:'center',
               justifyContent:'center', fontSize:12, fontWeight:600, color:sampleColor.color }}>
-              {group.values[0]}
+              {abbr}
             </div>
             <div>
               <div style={{ fontFamily:'Lora,serif', fontSize:16 }}>{group.label}</div>
