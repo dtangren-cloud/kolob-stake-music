@@ -235,7 +235,7 @@ export default function Admin() {
                     <table style={{ width:'100%', borderCollapse:'collapse', fontSize:13 }}>
                       <thead>
                         <tr>
-                          {['Title','Composer or Arranger','Voicing','Category','Accompaniment','Year','Copies','Available',''].map(h => (
+                          {['Title','Composer or Arranger','Voicing','Category','Publisher','Accompaniment','Year','Copies','Available',''].map(h => (
                             <th key={h} style={{ padding:'9px 12px', textAlign:'left', fontSize:11, fontWeight:500,
                               color:'var(--ink-md)', textTransform:'uppercase', letterSpacing:'.06em',
                               borderBottom:'1px solid var(--bd)', background:'var(--cream)', whiteSpace:'nowrap' }}>
@@ -255,6 +255,7 @@ export default function Admin() {
                             <td style={{ padding:'9px 12px', color:'var(--ink-md)' }}>{p.arranger || p.composer || '—'}</td>
                             <td style={{ padding:'9px 12px', color:'var(--ink-md)' }}>{p.voicing||'—'}</td>
                             <td style={{ padding:'9px 12px', color:'var(--ink-md)' }}>{p.category||'—'}</td>
+                            <td style={{ padding:'9px 12px', color:'var(--ink-md)' }}>{p.publisher||'—'}</td>
                             <td style={{ padding:'9px 12px', color:'var(--ink-md)' }}>{p.accompaniment||'—'}</td>
                             <td style={{ padding:'9px 12px', color:'var(--ink-lt)' }}>{p.publication_year||'—'}</td>
                             <td style={{ padding:'9px 12px', color:'var(--ink-md)' }}>{p.total_copies}</td>
@@ -274,7 +275,7 @@ export default function Admin() {
                           </tr>
                         ))}
                         {filtered.length === 0 && (
-                          <tr><td colSpan={10} style={{ padding:'3rem', textAlign:'center', color:'var(--ink-lt)' }}>
+                          <tr><td colSpan={11} style={{ padding:'3rem', textAlign:'center', color:'var(--ink-lt)' }}>
                             {search ? 'No pieces match your search.' : 'No pieces yet. Use "Add piece" or "Import CSV".'}
                           </td></tr>
                         )}
