@@ -40,7 +40,9 @@ create table if not exists checkouts (
   returned_at timestamptz
 );
 
-create or replace view music_with_availability as
+create or replace view music_with_availability
+with (security_invoker = true)
+as
 select
   m.*,
   coalesce(
