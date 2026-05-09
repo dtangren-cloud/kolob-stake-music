@@ -23,13 +23,14 @@ function AvailDot({ avail, total }) {
 }
 
 const COLS = [
-  { key:'title',            label:'Title',         w:'22%' },
-  { key:'arranger',         label:'Composer or Arranger', w:'22%' },
+  { key:'title',            label:'Title',         w:'20%' },
+  { key:'arranger',         label:'Composer or Arranger', w:'18%' },
   { key:'voicing',          label:'Voicing',       w:'9%'  },
-  { key:'accompaniment',    label:'Accompaniment', w:'12%' },
-  { key:'category',         label:'Category',      w:'13%' },
+  { key:'accompaniment',    label:'Accompaniment', w:'11%' },
+  { key:'category',         label:'Category',      w:'11%' },
+  { key:'publisher',        label:'Publisher',     w:'12%' },
   { key:'publication_year', label:'Year',          w:'6%'  },
-  { key:'available_copies', label:'Available',     w:'9%'  },
+  { key:'available_copies', label:'Available',     w:'8%'  },
 ]
 
 export default function MusicTable({ pieces=[], actionLabel, onAction, isActionDisabled, emptyMessage }) {
@@ -89,6 +90,7 @@ export default function MusicTable({ pieces=[], actionLabel, onAction, isActionD
                 <td style={{ padding:'10px 12px' }}><VoicingBadge v={p.voicing} /></td>
                 <td style={{ padding:'10px 12px', color:'var(--ink-md)' }}>{p.accompaniment||'—'}</td>
                 <td style={{ padding:'10px 12px', color:'var(--ink-md)' }}>{p.category||'—'}</td>
+                <td style={{ padding:'10px 12px', color:'var(--ink-md)' }}>{p.publisher||'—'}</td>
                 <td style={{ padding:'10px 12px', color:'var(--ink-lt)' }}>{p.publication_year||'—'}</td>
                 <td style={{ padding:'10px 12px' }}><AvailDot avail={avail} total={p.total_copies} /></td>
                 {actionLabel && (

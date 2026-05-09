@@ -41,10 +41,10 @@ export default function MusicForm({ initial, onSave, onCancel, saving }) {
       </div>
 
       <div className="form-row form-row-2">
-        <Field label="Composer">
-          <input className="input" value={form.composer} onChange={e=>set('composer',e.target.value)} />
+        <Field label="Publisher">
+          <input className="input" value={form.publisher} onChange={e=>set('publisher',e.target.value)} />
         </Field>
-        <Field label="Arranger">
+        <Field label="Arranger or Composer">
           <input className="input" value={form.arranger} onChange={e=>set('arranger',e.target.value)} />
         </Field>
       </div>
@@ -68,9 +68,6 @@ export default function MusicForm({ initial, onSave, onCancel, saving }) {
       </div>
 
       <div className="form-row form-row-2">
-        <Field label="Publisher">
-          <input className="input" value={form.publisher} onChange={e=>set('publisher',e.target.value)} />
-        </Field>
         <Field label="Publication year">
           <input className="input" type="number" min="1800" max="2099" value={form.publication_year} onChange={e=>set('publication_year',e.target.value)} />
         </Field>
