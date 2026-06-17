@@ -7,6 +7,15 @@ const EMPTY = {
   publisher:'', publication_year:'', total_copies:'', topic:'', notes:'',
 }
 
+function Field({ label, children }) {
+  return (
+    <div className="form-group">
+      <label className="label">{label}</label>
+      {children}
+    </div>
+  )
+}
+
 export default function MusicForm({ initial, onSave, onCancel, saving }) {
   const [form, setForm] = useState(initial || EMPTY)
 
@@ -21,13 +30,6 @@ export default function MusicForm({ initial, onSave, onCancel, saving }) {
       total_copies: form.total_copies !== '' && form.total_copies !== null ? parseInt(form.total_copies) : null,
     })
   }
-
-  const Field = ({ label, children }) => (
-    <div className="form-group">
-      <label className="label">{label}</label>
-      {children}
-    </div>
-  )
 
   return (
     <form onSubmit={handleSubmit}>
